@@ -2,6 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models.fields import CharField
 
 from .us_states import STATE_CHOICES, USPS_CHOICES
+from localflavor.us import forms
 
 
 class USStateField(CharField):
@@ -43,7 +44,20 @@ class PhoneNumberField(CharField):
         super(PhoneNumberField, self).__init__(*args, **kwargs)
 
     def formfield(self, **kwargs):
-        from localflavor.us.forms import USPhoneNumberField
-        defaults = {'form_class': USPhoneNumberField}
+        defaults = {'form_class': forms.USPhoneNumberField}
         defaults.update(kwargs)
         return super(PhoneNumberField, self).formfield(**defaults)
+
+
+class USZipCodeField(CharField):
+
+    description = _("Zip code")
+
+    def __init__(self, *args, **kwargs):
+        kwargs['max_length'] = 10
+        super(USZipCodeField, self).__init__(*args, **kwargs)
+
+    def formfield(self, **kwargs):
+        defaults = {'form_class': forms.USZipCodeField}
+        defaults.update(kwargs)
+        return super(USZipCodeField, self).formfield(**defaults)
